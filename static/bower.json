@@ -28,6 +28,14 @@
     "core-icon-button": "Polymer/core-icon-button#~0.5.4",
     "core-header-panel": "Polymer/core-header-panel#~0.5.4",
     "core-toolbar": "Polymer/core-toolbar#~0.5.4",
-    "paper-tabs": "Polymer/paper-tabs#~0.5.4"
+    "paper-tabs": "Polymer/paper-tabs#~0.5.4",
+    "font-roboto": "Polymer/font-roboto#~0.5.4",
+    "paper-dialog": "Polymer/paper-dialog#~0.5.4",
+    "paper-input": "Polymer/paper-input#~0.5.4",
+    "paper-button": "Polymer/paper-button#~0.5.4",
+    "core-ajax": "Polymer/core-ajax#~0.5.4",
+    "core-localstorage": "Polymer/core-localstorage#~0.5.4",
+    "core-input": "Polymer/core-input#~0.5.4",
+    "core-pages": "Polymer/core-pages#~0.5.4"
   }
 }

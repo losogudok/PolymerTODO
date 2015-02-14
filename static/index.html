@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Polymer Todo</title>
+    <link rel="import" href="elements/polymer/polymer.html"/>
+    <link rel="import" href="elements/todo-app.html"/>
+    <link rel="import" href="elements/font-roboto/roboto.html"/>
+    <style>
+        html, body  {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        html /deep/ .loginDialog {
+            width: 400px;
+        }
+        html /deep/ .loginDialog paper-button {
+            background-color: #3e50b4;
+            color: white;
+            margin: 20px 0 0 0;
+        }
+    </style>
+</head>
+<body unresolved>
+    <todo-app></todo-app>
+</body>
+</html>

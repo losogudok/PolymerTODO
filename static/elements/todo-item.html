@@ -1,0 +1,23 @@
+<link rel="import" href="polymer/polymer.html">
+<link rel="import" href="core-icon-button/core-icon-button.html">
+
+<polymer-element name="todo-item" attributes="data">
+    <template>
+        <style>
+
+        </style>
+        <div>
+            <input type="checkbox" checked="{{ done }}"/>
+            <input type="text" value="{{ title }}"/>
+            <core-icon-button icon="delete"></core-icon-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            ready: function() {
+                this.title = '';
+                this.done = false;
+            }
+        });
+    </script>
+</polymer-element>

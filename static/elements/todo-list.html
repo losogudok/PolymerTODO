@@ -1,0 +1,58 @@
+<link rel="import" href="polymer/polymer.html">
+<link rel="import" href="paper-tabs/paper-tabs.html">
+<link rel="import" href="paper-tabs/paper-tab.html">
+<link rel="import" href="core-toolbar/core-toolbar.html"/>
+<link rel="import" href="core-icon-button/core-icon-button.html"/>
+<link rel="import" href="core-pages/core-pages.html"/>
+<link rel="import" href="todo-item.html"/>
+
+<polymer-element name="todo-list" attributes="data">
+    <template>
+        <style>
+            :host {
+                width: 320px;
+                display: block;
+                margin-bottom: 20px;
+            }
+            paper-tabs {
+                background-color: #00bcd4;
+                color: #fff;
+                box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+        <div class="todo-list">
+            <core-toolbar>
+                <core-icon-button icon="account-circle"></core-icon-button>
+                <div flex></div>
+                <core-icon-button icon="add" on-tap="{{ onItemAdd }}"></core-icon-button>
+            </core-toolbar>
+            <paper-tabs selected="{{ selected }}">
+                  <paper-tab>Theory</paper-tab>
+                  <paper-tab>Practice</paper-tab>
+            </paper-tabs>
+            <core-pages selected="{{ selected }}">
+                <div>
+                    <template repeat="{{ list in practiceList }}">
+                        <todo-item data="{{ list }}"></todo-item>
+                    </template>
+                </div>
+                <div>
+                    <template repeat="{{ list in theoryList }}">
+                        <todo-item data="{{ list }}"></todo-item>
+                    </template>
+                </div>
+            </core-pages>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            ready: function() {
+                this.practiceList = [];
+                this.theoryList = [];
+            },
+            onItemAdd: function() {
+                console.log(this.selected);
+            }
+        });
+    </script>
+</polymer-element>
