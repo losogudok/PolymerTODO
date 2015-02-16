@@ -1,7 +1,7 @@
 <link rel="import" href="polymer/polymer.html">
 <link rel="import" href="core-icon-button/core-icon-button.html">
 <link rel="import" href="paper-checkbox/paper-checkbox.html"/>
-<link rel="import" href="paper-input/paper-input.html"/>
+<link rel="import" href="paper-input/paper-autogrow-textarea.html"/>
 
 <polymer-element name="todo-item" attributes="data">
     <template>
@@ -15,10 +15,20 @@
             paper-checkbox[checked] /deep/ #checkmark {
                 border-color: #ffffff;
             }
+            paper-autogrow-textarea textarea {
+                background-color: rgb(179, 229, 252);
+                line-height: 1.4;
+                font-family: 'Roboto', sans-serif;
+            }
+            paper-autogrow-textarea textarea::-webkit-scrollbar {
+                display: none;
+            }
         </style>
         <div layout horizontal center>
             <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
-            <paper-input value="{{ data.title }}" flex></paper-input>
+            <paper-autogrow-textarea id="textarea" rows="1" maxRows="4">
+                <textarea id="title" value="{{ data.title }}" flex on-change="{{ onTitleChange }}" on-blur="{{ updateItem }}"></textarea>
+            </paper-autogrow-textarea>
             <core-icon-button icon="delete" on-tap="{{ deleteItem }}"></core-icon-button>
         </div>
     </template>
@@ -26,6 +36,9 @@
         Polymer({
             created: function() {
                 this.data = {};
+            },
+            onTitleChange: function() {
+                this.$.textarea.update();
             },
             updateItem: function() {
                 this.fire('update-todo-item');

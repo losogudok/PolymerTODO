@@ -24,7 +24,7 @@
                 <div flex>My Todos</div>
                 <core-icon-button icon="add" on-tap="{{ addTodoList }}"></core-icon-button>
             </core-toolbar>
-            <div layout horizontal wrap justified class="lists">
+            <div layout horizontal wrap start class="lists">
                 <template repeat="{{ todoList in data.todoLists }}">
                     <todo-list data="{{ todoList }}"></todo-list>
                 </template>
