@@ -1,15 +1,8 @@
 <link rel="import" href="polymer/polymer.html">
-<link rel="import" href="todo-list.html">
-<link rel="import" href="core-icon-button/core-icon-button.html">
-<link rel="import" href="core-header-panel/core-header-panel.html"/>
-<link rel="import" href="core-toolbar/core-toolbar.html"/>
-<link rel="import" href="paper-dialog/paper-dialog.html"/>
-<link rel="import" href="paper-input/paper-input-decorator.html"/>
-<link rel="import" href="paper-button/paper-button.html"/>
-<link rel="import" href="core-ajax/core-ajax.html"/>
 <link rel="import" href="core-localstorage/core-localstorage.html"/>
-<link rel="import" href="core-input/core-input.html"/>
-
+<link rel="import" href="todo-list-view.html"/>
+<link rel="import" href="login-view.html"/>
+<link rel="import" href="app-globals.html"/>
 
 <polymer-element name="todo-app">
     <template>
@@ -18,99 +11,129 @@
                display: block;
                height: 100%;
            }
-           core-header-panel {
-               height: 100%;
-           }
-            core-toolbar {
-                background-color: #B3E5FC;
-                color: white;
-            }
-            .loginView {
-                background-color: #00BCD4;
-            }
         </style>
-        <template if="{{ loggedIn === 'true' }}">
-            <core-header-panel>
-                <core-toolbar>
-                    <div flex>{{ name }}</div>
-                    <core-icon-button icon="add" on-tap="{{addList}}"></core-icon-button>
-                </core-toolbar>
-                <div layout horizontal wrap justified>
-                    <template repeat="{{ todoList in todoLists }}">
-                        <todo-list data="{{ todoList }}"></todo-list>
-                    </template>
-                </div>
-            </core-header-panel>
+        <template if="{{ data.page === '1' }}">
+            <todo-list-view id="todoListView"
+                            on-add-todo-list="{{ onAddTodoList }}"
+                            on-delete-todo-list="{{ onDeleteTodoList }}"
+                            on-update-todo-list="{{ onUpdateTodoList }}">
+            </todo-list-view>
         </template>
-        <template if="{{ loggedIn !== 'true' }}">
-            <div class="loginView" fit>
-                <paper-dialog heading="Welcome!" transition="core-transition-center"  autoCloseDisabled="true" id="loginDialog">
-                    <div class="loginDialog">
-                        <div layout horizontal>
-                            <paper-input-decorator flex label="Name" floatingLabel="true" id="name">
-                                <input is="core-input" required value="{{ name }}">
-                            </paper-input-decorator>
-                        </div>
-                        <div layout horizontal>
-                            <paper-input-decorator flex label="Secret key" floatingLabel="true" id="key">
-                                <input is="core-input" required value="{{ secretKey }}">
-                            </paper-input-decorator>
-                        </div>
-                        <div layout horizontal>
-                            <paper-button raised flex on-tap="{{ submitForm }}">
-                                Submit
-                            </paper-button>
-                        </div>
-                    </div>
-                </paper-dialog>
-            </div>
-            <core-ajax id="ajax"
-                       url="/api/secret"
-                       method="POST"
-                       body='{"name": "{{name}}", "secretKey": "{{secretKey}}" }'
-                       on-core-response="{{ onSuccess }}"
-                       on-core-error="{{ onError }}"
-                       handleAs="json">
-            </core-ajax>
+        <template if="{{ data.page === '0' }}">
+            <login-view></login-view>
         </template>
-        <core-localstorage id="loggedstate" name="loggedstate" value="{{ loggedIn }}" on-core-localstorage-load="{{ onStateLoad }}"></core-localstorage>
+        <app-globals id="globals" on-data-changed="{{ dataChanged }}"></app-globals>
     </template>
     <script>
-        Polymer({
-            ready: function() {
-                this.todoLists = [];
-            },
-            addList: function() {
-                console.log('add');
-                this.todoLists.push(1);
-            },
-            submitForm: function() {
-                var name = this.$.name;
-                var key = this.$.key;
+            Polymer({
+                ready: function() {
+                    this.data = this.$.globals.data;
+                },
+                dataChanged: function() {
+                    if (this.data.page === '1') {
+                        this.connectDB();
+                    }
+                },
+                connectDB: function() {
+                    var self = this;
+                    var data = this.data;
+                    var db = new PouchDB('todos');
 
-                key.isInvalid = false;
-                key.error = '';
-                name.validate();
-                key.validate();
-                if (name.isInvalid || key.isInvalid) {
-                    return;
+                    var sync = PouchDB.sync('todos', 'http://localhost:5984/todos', {live: true})
+                        .on('change', function (info) {
+                            console.log(info);
+                        })
+                        .on('complete', function (info) {
+
+                        })
+                        .on('error', function (err) {
+                            // handle error
+                        });
+
+                    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                        data.todoLists = doc.rows.map(function(item){
+                            return item.doc;
+                        });
+                    });
+
+                    db.changes({
+                        include_docs: true,
+                        since: 'now',
+                        live: true
+                    })
+                    .on('create', function(change){
+                        data.todoLists.push(change.doc);
+                    })
+                    .on('update', function(change){
+                        var id = change.id;
+                        var doc = change.doc;
+                        var lists = self.data.todoLists;
+                        var list;
+
+                        for (var i = 0; i < lists.length; i++) {
+                            if (lists[i]._id === id) {
+                                list = lists[i];
+                                break;
+                            }
+                        }
+                        self.updateTodoList(list, doc);
+                    })
+                    .on('delete', function(change){
+                        var id = change.id;
+                        var lists = data.todoLists;
+
+                        for (var i = 0; i < lists.length; i++) {
+                            if (lists[i]._id === change.id) {
+                                lists.splice(i, 1);
+                                break;
+                            }
+                        }
+                    });
+                    this.data.db = db;
+                },
+                updateTodoList: function(todoList, update) {
+                    for (var key in todoList) {
+                        if (typeof todoList[key] === 'string' && todoList[key] !== update[key]) {
+                            todoList[key] = update[key];
+                        }
+                        else if (typeof todoList[key] === 'object') {
+                            todoList[key] = update[key];
+                        }
+                    }
+                },
+                onAddTodoList: function() {
+                    var db = this.data.db;
+
+                    db.put({
+                        _id: String(performance.now()),
+                        listName: '',
+                        theoryItems: [],
+                        practiceItems: []
+                    });
+                },
+                onDeleteTodoList: function(e) {
+                    var data = e.detail;
+                    var db = this.data.db;
+
+                    db.remove(data._id, data._rev);
+                },
+                onUpdateTodoList: function(e) {
+                    var data = e.detail;
+                    var db = this.data.db;
+
+                    db.get(data._id).
+                    then(function(otherDoc) {
+                        data._rev = otherDoc._rev;
+                        return db.put(data);
+                    },
+                    function(err, response) {
+                        if (err) {
+                            // on error
+                        } else {
+                            // on success
+                        }
+                    });
                 }
-                this.$.ajax.go();
-            },
-            onSuccess: function() {
-                this.$.loginDialog.opened = false;
-                this.$.loggedstate.value = 'true';
-            },
-            onError: function() {
-                var key = this.$.key;
-                key.isInvalid = true;
-                key.error = 'Wrong secret key';
-            },
-            onStateLoad: function() {
-                if (this.$.loggedstate.value !== 'true') {
-                    this.$.loginDialog.opened = true;
-                }
-            }
-        });
+            });
     </script>
 </polymer-element>

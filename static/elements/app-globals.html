@@ -1,0 +1,27 @@
+<link rel="import" href="polymer/polymer.html"/>
+<link rel="import" href="core-localstorage/core-localstorage.html"/>
+
+<polymer-element name="app-globals">
+    <template>
+        <core-localstorage id="loggedstate" name="loggedstate"  on-core-localstorage-load="{{ onStateLoad }}"></core-localstorage>
+    </template>
+    <script>
+        (function(){
+            var data = {
+                page: '0'
+            };
+
+            Polymer({
+                ready: function() {
+                    this.data = data;
+                },
+                onStateLoad: function() {
+                    if (Boolean(this.$.loggedstate.value)) {
+                        this.data.page = this.$.loggedstate.value;
+                        this.fire('data-changed');
+                    }
+                }
+            });
+        })();
+    </script>
+</polymer-element>

@@ -1,0 +1,19 @@
+html, body  {
+    height: 100%;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+html /deep/ .loginDialog {
+    width: 400px;
+}
+@media (max-width: 320px) {
+    html /deep/ .loginDialog {
+        width: 200px;
+        box-sizing: border-box;
+    }
+}
+html /deep/ .loginDialog paper-button {
+    background-color: #3e50b4;
+    color: white;
+    margin: 20px 0 0 0;
+}

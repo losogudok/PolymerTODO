@@ -2,9 +2,11 @@
 <link rel="import" href="paper-tabs/paper-tabs.html">
 <link rel="import" href="paper-tabs/paper-tab.html">
 <link rel="import" href="core-toolbar/core-toolbar.html"/>
-<link rel="import" href="core-icon-button/core-icon-button.html"/>
 <link rel="import" href="core-pages/core-pages.html"/>
 <link rel="import" href="todo-item.html"/>
+<link rel="import" href="paper-input/paper-input-decorator.html"/>
+<link rel="import" href="paper-input/paper-input.html"/>
+<link rel="import" href="core-icon-button/core-icon-button.html"/>
 
 <polymer-element name="todo-list" attributes="data">
     <template>
@@ -13,33 +15,75 @@
                 width: 320px;
                 display: block;
                 margin-bottom: 20px;
+                box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+                background-color: rgb(179, 229, 252);
+            }
+            core-icon-button {
+                color: #ffffff;
+            }
+            core-pages {
+                position: static;
+            }
+            core-toolbar {
+                background-color: #00BCD4;
+            }
+            core-toolbar /deep/ .unfocused-underline {
+                background-color: white;
             }
             paper-tabs {
                 background-color: #00bcd4;
                 color: #fff;
-                box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+                /*box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);*/
+            }
+            paper-input {
+                display: block;
+            }
+            core-pages .page {
+                padding: 10px;
+                position: static;
+                display: none;
+                background-color: rgb(179, 229, 252);
+            }
+            core-pages .page.core-selected {
+                display: block;
+            }
+            #listName {
+                color: white;
             }
         </style>
         <div class="todo-list">
             <core-toolbar>
-                <core-icon-button icon="account-circle"></core-icon-button>
-                <div flex></div>
-                <core-icon-button icon="add" on-tap="{{ onItemAdd }}"></core-icon-button>
+                <div flex>
+                    <paper-input-decorator>
+                        <input is="core-input" id="listName" value="{{ data.listName }}" on-keypress="{{ saveName }}" on-blur="{{ saveName }}"/>
+                    </paper-input-decorator>
+                </div>
+                <core-icon-button icon="clear" on-tap="{{ deleteList }}"></core-icon-button>
             </core-toolbar>
-            <paper-tabs selected="{{ selected }}">
+            <paper-tabs selected="{{ selected }}" noink>
                   <paper-tab>Theory</paper-tab>
                   <paper-tab>Practice</paper-tab>
             </paper-tabs>
             <core-pages selected="{{ selected }}">
-                <div>
-                    <template repeat="{{ list in practiceList }}">
-                        <todo-item data="{{ list }}"></todo-item>
+                <div class="page">
+                    <template repeat="{{ item in data.theoryItems }}">
+                        <todo-item data="{{ item }}"
+                                   on-delete-todo-item="{{ deleteTodoItem }}"
+                                   on-update-todo-item="{{ updateTodoItem }}"
+                                   data-type="theoryItems">
+                        </todo-item>
                     </template>
+                    <paper-input on-blur="{{ addTodoItem }}" on-keypress="{{ addTodoItem }}" data-type="theoryItems" id="theoryItems"></paper-input>
                 </div>
-                <div>
-                    <template repeat="{{ list in theoryList }}">
-                        <todo-item data="{{ list }}"></todo-item>
+                <div class="page">
+                    <template repeat="{{ item in data.practiceItems }}">
+                        <todo-item data="{{ item }}"
+                                   on-delete-todo-item="{{ deleteTodoItem }}"
+                                   on-update-todo-item="{{ updateTodoItem }}"
+                                   data-type="practiceItems">
+                        </todo-item>
                     </template>
+                    <paper-input on-blur="{{ addTodoItem }}" on-keypress="{{ addTodoItem }}" data-type="practiceItems" id="practiceItems"></paper-input>
                 </div>
             </core-pages>
         </div>
@@ -47,11 +91,36 @@
     <script>
         Polymer({
             ready: function() {
-                this.practiceList = [];
-                this.theoryList = [];
+                this.selected = '0';
             },
-            onItemAdd: function() {
-                console.log(this.selected);
+            deleteList: function() {
+                this.fire('delete-todo-list', {
+                    _id: this.data._id,
+                    _rev: this.data._rev
+                });
+            },
+            saveName: function(e) {
+                if (e.keyCode === 13 || e.type === 'blur') {
+                    this.fire('update-todo-list', this.data);
+                }
+            },
+            addTodoItem: function(e, detail, sender) {
+                if (e.keyCode === 13 || e.type === 'blur' && sender.value !== '') {
+                    this.data[sender.dataset.type].push({
+                        title: sender.value,
+                        done: false
+                    });
+                    this.$[sender.dataset.type].value = '';
+                    this.fire('update-todo-list', this.data);
+                }
+            },
+            updateTodoItem: function() {
+                this.fire('update-todo-list', this.data);
+            },
+            deleteTodoItem: function (e, detail, sender) {
+                var index = this.data[sender.dataset.type].indexOf(sender.data);
+                this.data[sender.dataset.type].splice(index, 1);
+                this.fire('update-todo-list', this.data);
             }
         });
     </script>

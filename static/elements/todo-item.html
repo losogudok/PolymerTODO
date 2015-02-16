@@ -1,22 +1,37 @@
 <link rel="import" href="polymer/polymer.html">
 <link rel="import" href="core-icon-button/core-icon-button.html">
+<link rel="import" href="paper-checkbox/paper-checkbox.html"/>
+<link rel="import" href="paper-input/paper-input.html"/>
 
 <polymer-element name="todo-item" attributes="data">
     <template>
         <style>
-
+            paper-checkbox {
+                margin-right: 15px;
+            }
+            paper-checkbox /deep/ #checkmark {
+                border-color: rgb(179, 229, 252);
+            }
+            paper-checkbox[checked] /deep/ #checkmark {
+                border-color: #ffffff;
+            }
         </style>
-        <div>
-            <input type="checkbox" checked="{{ done }}"/>
-            <input type="text" value="{{ title }}"/>
-            <core-icon-button icon="delete"></core-icon-button>
+        <div layout horizontal center>
+            <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
+            <paper-input value="{{ data.title }}" flex></paper-input>
+            <core-icon-button icon="delete" on-tap="{{ deleteItem }}"></core-icon-button>
         </div>
     </template>
     <script>
         Polymer({
-            ready: function() {
-                this.title = '';
-                this.done = false;
+            created: function() {
+                this.data = {};
+            },
+            updateItem: function() {
+                this.fire('update-todo-item');
+            },
+            deleteItem: function(e, detail, sender) {
+                this.fire('delete-todo-item');
             }
         });
     </script>

@@ -36,6 +36,8 @@
     "core-ajax": "Polymer/core-ajax#~0.5.4",
     "core-localstorage": "Polymer/core-localstorage#~0.5.4",
     "core-input": "Polymer/core-input#~0.5.4",
-    "core-pages": "Polymer/core-pages#~0.5.4"
+    "core-pages": "Polymer/core-pages#~0.5.4",
+    "pouchdb": "~3.3.1",
+    "paper-checkbox": "Polymer/paper-checkbox#~0.5.4"
   }
 }

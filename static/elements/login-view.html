@@ -1,0 +1,79 @@
+<link rel="import" href="polymer/polymer.html"/>
+<link rel="import" href="paper-dialog/paper-dialog.html"/>
+<link rel="import" href="paper-input/paper-input-decorator.html"/>
+<link rel="import" href="paper-button/paper-button.html"/>
+<link rel="import" href="core-input/core-input.html"/>
+<link rel="import" href="core-localstorage/core-localstorage.html"/>
+<link rel="import" href="app-globals.html"/>
+
+<polymer-element name="login-view">
+    <template>
+        <style>
+            .loginView {
+                background-color: #00BCD4;
+            }
+        </style>
+        <div class="loginView" fit>
+            <paper-dialog heading="Welcome!"  transition="core-transition-center" autoCloseDisabled="true" id="loginDialog">
+                <div class="loginDialog">
+                    <div layout horizontal>
+                        <paper-input-decorator flex label="Secret key" floatingLabel="true" id="secretKeyDecorator">
+                            <input is="core-input" required id="secretKeyValue">
+                        </paper-input-decorator>
+                    </div>
+                    <div layout horizontal>
+                        <paper-button raised flex on-tap="{{ checkSecretKey }}">
+                            Submit
+                        </paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
+        </div>
+        <core-localstorage id="loggedstate" name="loggedstate"  on-core-localstorage-load="{{ onStateLoad }}"></core-localstorage>
+        <app-globals id="globals"></app-globals>
+    </template>
+    <script>
+        (function(){
+           var SECRET_KEY = '123';
+
+            Polymer({
+                ready: function() {
+                    this.data = this.$.globals.data;
+                },
+                checkSecretKey: function() {
+                    var decorator = this.$.secretKeyDecorator;
+                    var value = this.$.secretKeyValue.value;
+
+                    decorator.isInvalid = false;
+                    decorator.error = '';
+                    decorator.validate();
+                    if (decorator.isInvalid) {
+                        return;
+                    }
+                    if (value === SECRET_KEY) {
+                        this.onSuccess();
+                    }
+                    else {
+                        this.onError();
+                    }
+                },
+                onSuccess: function() {
+                    this.$.loggedstate.value = '1';
+                    this.$.loggedstate.save();
+                    this.data.page = '1';
+                    this.$.loginDialog.opened = false;
+                },
+                onError: function() {
+                    var key = this.$.secretKeyDecorator;
+                    key.isInvalid = true;
+                    key.error = 'Wrong secret key';
+                },
+                onStateLoad: function() {
+                    if (this.$.loggedstate.value !== '1') {
+                        this.$.loginDialog.opened = true;
+                    }
+                }
+            });
+        })();
+    </script>
+</polymer-element>
