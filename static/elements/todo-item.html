@@ -26,7 +26,7 @@
         </style>
         <div layout horizontal center>
             <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
-            <paper-autogrow-textarea id="textarea" rows="1" maxRows="4">
+            <paper-autogrow-textarea id="textarea" rows="1" maxRows="4" flex>
                 <textarea id="title" value="{{ data.title }}" flex on-change="{{ onTitleChange }}" on-blur="{{ updateItem }}"></textarea>
             </paper-autogrow-textarea>
             <core-icon-button icon="delete" on-tap="{{ deleteItem }}"></core-icon-button>
