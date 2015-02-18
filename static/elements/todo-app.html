@@ -55,9 +55,8 @@
                         console.log('db.allDocs: ', data);
                         data.todoLists = doc.rows.map(function(item){
                             return item.doc;
-                        };
-                        console.log('todoLists: ', data.todoLists);
-                        );
+                        });
+                        console.log('todoLists: ', datatodoLists);
                     });
 
                     db.changes({
