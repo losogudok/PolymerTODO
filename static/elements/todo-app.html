@@ -41,7 +41,7 @@
                     var data = this.data;
                     var db = new PouchDB('todos');
 
-                    var sync = PouchDB.sync('http://science.im/todos/todos/', 'todos', {live: true})
+                    db.sync('http://science.im/todos/todos/', 'todos', {live: true})
                         .on('change', function (info) {
                             console.log(info);
                         })
