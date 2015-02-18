@@ -27,7 +27,6 @@
     <script>
             Polymer({
                 ready: function() {
-                    
                     this.data = this.$.globals.data;
                     console.log('Ready: ', this.data);
                 },
@@ -50,6 +49,7 @@
                             console.log('Complete: ', info);
                         })
                         .on('error', function (err) {
+                            console.log(err);
                             // handle error
                         });
 
