@@ -32,6 +32,7 @@
                     console.log('Ready: ', this.data);
                 },
                 dataChanged: function() {
+                    console.log('data finally changed: ', this.data.page);
                     if (this.data.page === '1') {
                         this.connectDB();
                     }
