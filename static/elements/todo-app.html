@@ -52,9 +52,12 @@
                         });
 
                     db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                        console.log('db.allDocs: ', data);
                         data.todoLists = doc.rows.map(function(item){
                             return item.doc;
-                        });
+                        }
+                        console.log('todoLists: ', data.todoLists);
+                        );
                     });
 
                     db.changes({
