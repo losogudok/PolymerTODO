@@ -60,7 +60,7 @@
                 onSuccess: function() {
                     this.$.loggedstate.value = '1';
                     this.$.loggedstate.save();
-                    this.data.page = '1';
+                    this.$.globals.data = '1';
                     this.$.loginDialog.opened = false;
                 },
                 onError: function() {
