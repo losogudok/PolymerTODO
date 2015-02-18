@@ -27,7 +27,8 @@
     <script>
             Polymer({
                 ready: function() {
-                    this.data = this.$.globals.data;
+                    
+                    this.connectDB();
                     console.log('Ready: ', this.data);
                 },
                 dataChanged: function() {
