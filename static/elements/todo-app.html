@@ -40,8 +40,10 @@
                     var self = this;
                     var data = this.data;
                     var db = new PouchDB('todos');
+                    
+                    db.replicate.from('http://science.im/todos/todos/');
 
-                    db.sync('todos', 'http://science.im/todos/todos/', {live: true})
+                    var sync = PouchDB.sync('todos', 'http://science.im/todos/todos/', {live: true})
                         .on('change', function (info) {
                             console.log(info);
                         })
