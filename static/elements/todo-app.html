@@ -40,28 +40,27 @@
                     var self = this;
                     var data = this.data;
                     var db = new PouchDB('todos');
-                    
-                    db.replicate.from('http://science.im/todos/todos/');
 
-                    var sync = PouchDB.sync('todos', 'http://science.im/todos/todos/', {live: true})
+                    db.sync('todos', 'http://science.im/todos/todos/', {live: true})
                         .on('change', function (info) {
                             console.log(info);
                         })
                         .on('complete', function (info) {
                             console.log('Complete: ', info);
+                            db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                                console.log('db.allDocs: ', data);
+                                data.todoLists = doc.rows.map(function(item){
+                                    return item.doc;
+                                });
+                                console.log('todoLists: ', data.todoLists);
+                            });
                         })
                         .on('error', function (err) {
                             console.log(err);
                             // handle error
                         });
 
-                    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-                        console.log('db.allDocs: ', data);
-                        data.todoLists = doc.rows.map(function(item){
-                            return item.doc;
-                        });
-                        console.log('todoLists: ', data.todoLists);
-                    });
+                    
 
                     db.changes({
                         include_docs: true,
