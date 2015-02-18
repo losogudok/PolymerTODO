@@ -28,6 +28,7 @@
             Polymer({
                 ready: function() {
                     this.data = this.$.globals.data;
+                    console.log('Ready: ', this.data);
                 },
                 dataChanged: function() {
                     if (this.data.page === '1') {
