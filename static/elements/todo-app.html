@@ -22,7 +22,7 @@
         <template if="{{ data.page === '0' }}">
             <login-view></login-view>
         </template>
-        <app-globals id="globals" on-data-changed="{{ dataChanged }}"></app-globals>
+        <app-globals on-changed="{{ dataChanged }}"></app-globals>
     </template>
     <script>
             Polymer({
@@ -30,8 +30,7 @@
                     this.data = this.$.globals.data;
                     console.log('Ready: ', this.data);
                 },
-                dataChanged: function(msg) {
-                    console.log(msg);
+                dataChanged: function() {
                     if (this.data.page === '1') {
                         this.connectDB();
                     }
