@@ -99,6 +99,7 @@
                 },
                 showTodoLists: function() {
                     console.log('SHOW must go on');
+                    console.log(this.data);
                     var db = this.data.db;
                     db.allDocs({include_docs: true, descending: true}, function(err, doc) {
                         console.log('db.allDocs: ', data);
