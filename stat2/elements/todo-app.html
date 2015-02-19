@@ -22,13 +22,16 @@
         <template if="{{ data.page === '0' }}">
             <login-view></login-view>
         </template>
-        <app-globals id='globals' on-data-changed="{{ dataChanged }}"></app-globals>
+        <app-globals id='globals'></app-globals>
     </template>
     <script>
             Polymer({
                 ready: function() {
                     this.data = this.$.globals.data;
                     console.log('Ready: ', this.data);
+                },
+                observe: {
+                    'data.page': 'dataChanged'
                 },
                 dataChanged: function() {
                     if (this.data.page === '1') {
@@ -38,7 +41,7 @@
                 connectDB: function() {
                     var self = this;
                     var data = this.data;
-                    var db = new PouchDB('http://science.im/todos/todos/');
+                    var db = new PouchDB('localhost:5984/todos');
 
                     // var sync = PouchDB.sync('todos', 'http://science.im/todos/todos/', {live: true})
                     //     .on('change', function (info) {

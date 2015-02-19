@@ -18,7 +18,6 @@
                 onStateLoad: function() {
                     if (Boolean(this.$.loggedstate.value)) {
                         this.data.page = this.$.loggedstate.value;
-                        this.fire('data-changed');
                     }
                 }
             });
