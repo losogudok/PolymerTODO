@@ -41,26 +41,25 @@
                     var data = this.data;
                     var db = new PouchDB('todos');
 
-                    db.sync('http://science.im/todos/todos/', 'todos', {live: true})
+                    var sync = PouchDB.sync('todos', 'http://science.im/todos/todos/', {live: true})
                         .on('change', function (info) {
                             console.log(info);
                         })
                         .on('complete', function (info) {
                             console.log('Complete: ', info);
-                            self.showTodoLists();
                         })
                         .on('error', function (err) {
                             console.log(err);
                             // handle error
                         });
 
-                    // db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-                    //     console.log('db.allDocs: ', data);
-                    //     data.todoLists = doc.rows.map(function(item){
-                    //         return item.doc;
-                    //     });
-                    //     console.log('todoLists: ', data.todoLists);
-                    // });
+                    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                        console.log('db.allDocs: ', data);
+                        data.todoLists = doc.rows.map(function(item){
+                            return item.doc;
+                        });
+                        console.log('todoLists: ', data.todoLists);
+                    });
 
                     db.changes({
                         include_docs: true,
@@ -96,18 +95,6 @@
                         }
                     });
                     this.data.db = db;
-                },
-                showTodoLists: function() {
-                    console.log('SHOW must go on');
-                    console.log(this.data);
-                    var db = this.data.db;
-                    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-                        console.log('db.allDocs: ', data);
-                        data.todoLists = doc.rows.map(function(item){
-                            return item.doc;
-                        });
-                        console.log('todoLists: ', data.todoLists);
-                    });
                 },
                 updateTodoList: function(todoList, update) {
                     for (var key in todoList) {
