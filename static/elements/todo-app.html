@@ -22,7 +22,7 @@
         <template if="{{ data.page === '0' }}">
             <login-view></login-view>
         </template>
-        <app-globals on-changed="{{ dataChanged }}"></app-globals>
+        <app-globals id='globals' on-changed="{{ dataChanged }}"></app-globals>
     </template>
     <script>
             Polymer({
