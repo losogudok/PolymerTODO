@@ -13,7 +13,6 @@
            }
         </style>
         <template if="{{ data.page === '1' }}">
-            <span>HA!</span>
             <todo-list-view id="todoListView"
                             on-add-todo-list="{{ onAddTodoList }}"
                             on-delete-todo-list="{{ onDeleteTodoList }}"
@@ -28,6 +27,7 @@
     <script>
             Polymer({
                 ready: function() {
+                    console.log(this.$.globals.data);
                     this.data = this.$.globals.data;
                     console.log('Ready: ', this.data);
                 },
