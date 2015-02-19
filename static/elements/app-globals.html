@@ -16,9 +16,9 @@
                     this.data = data;
                 },
                 onStateLoad: function() {
-                    console.log(this.$.loggedstate.value);
                     if (Boolean(this.$.loggedstate.value)) {
                         this.data.page = this.$.loggedstate.value;
+                        console.log(this.data.page);
                         this.fire('data-changed');
                     }
                 }
