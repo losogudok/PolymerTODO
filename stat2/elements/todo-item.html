@@ -29,7 +29,7 @@
         </style>
         <div layout horizontal center>
             <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
-            <paper-autogrow-textarea id="textarea" flex>
+            <paper-autogrow-textarea id="textarea" rows='1' maxRows: '0' flex>
                 <textarea id="title"
                           value="{{ data.title }}"
                           flex
