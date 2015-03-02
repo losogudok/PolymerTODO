@@ -29,10 +29,9 @@
         </style>
         <div layout horizontal center>
             <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
-            <paper-autogrow-textarea id="textarea" rows='1' maxRows: '0' flex>
+            <paper-autogrow-textarea id="textarea" flex>
                 <textarea id="title"
                           value="{{ data.title }}"
-                          flex
                           on-change="{{ onTitleChange }}"
                           on-blur="{{ updateItem }}"
                           class="{{ {done: data.done} | tokenList}}">
@@ -43,11 +42,14 @@
     </template>
     <script>
         Polymer({
+            ready: function() {
+                this.$.textarea.update(this.$.title);
+            },
             created: function() {
                 this.data = {};
             },
             onTitleChange: function() {
-                this.$.textarea.update();
+                this.$.textarea.update(this.$.title);
             },
             updateItem: function() {
                 this.fire('update-todo-item');
