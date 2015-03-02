@@ -2,6 +2,7 @@
 <link rel="import" href="/stat2/elements/core-icon-button/core-icon-button.html">
 <link rel="import" href="/stat2/elements/paper-checkbox/paper-checkbox.html"/>
 <link rel="import" href="/stat2/elements/paper-input/paper-autogrow-textarea.html"/>
+<link rel="import" href="/stat2/elements/paper-input/paper-input-decorator.html"/>
 
 <polymer-element name="todo-item" attributes="data">
     <template>
@@ -15,13 +16,21 @@
             paper-checkbox[checked] /deep/ #checkmark {
                 border-color: #ffffff;
             }
-            paper-autogrow-textarea textarea {
-                background-color: rgb(179, 229, 252);
-                line-height: 1.4;
-                font-family: 'Roboto', sans-serif;
+            paper-input-decorator {
+                padding: 0;
+            }
+            paper-input-decorator /deep/ .unfocused-underline,
+            paper-input-decorator /deep/ .focused-underline {
+                background-color: transparent;
+            }
+            paper-autogrow-textarea {
+                width: 100%;
             }
             paper-autogrow-textarea textarea::-webkit-scrollbar {
                 display: none;
+            }
+            #title {
+                background-color: rgb(179, 229, 252);
             }
             .done {
                 text-decoration: line-through;
@@ -29,14 +38,18 @@
         </style>
         <div layout horizontal center>
             <paper-checkbox checked="{{ data.done }}" on-change="{{ updateItem }}"></paper-checkbox>
-            <paper-autogrow-textarea id="textarea" flex>
-                <textarea id="title"
-                          value="{{ data.title }}"
-                          on-change="{{ onTitleChange }}"
-                          on-blur="{{ updateItem }}"
-                          class="{{ {done: data.done} | tokenList}}">
-                </textarea>
-            </paper-autogrow-textarea>
+            <div flex>
+                <paper-input-decorator>
+                    <paper-autogrow-textarea id="textarea">
+                    <textarea id="title"
+                              value="{{ data.title }}"
+                              on-change="{{ onTitleChange }}"
+                              on-blur="{{ updateItem }}"
+                              class="{{ {done: data.done} | tokenList}}">
+                    </textarea>
+                    </paper-autogrow-textarea>
+                </paper-input-decorator>
+            </div>
             <core-icon-button icon="delete" on-tap="{{ deleteItem }}"></core-icon-button>
         </div>
     </template>
