@@ -14,6 +14,8 @@ sudo service couchdb restart
 
 npm install -g add-cors-to-couchdb
 
+add-cors-to-couchdb
+
 npm install bower
 
 "bower install" in static folder
