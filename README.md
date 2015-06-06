@@ -10,7 +10,7 @@ Lastly, restart couchdb:
 
 sudo service couchdb restart
 
-For CORS:
+## For CORS:
 
 npm install -g add-cors-to-couchdb
 
